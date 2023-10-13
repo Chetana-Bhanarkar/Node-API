@@ -79,7 +79,7 @@ const verifyUser = (req,res,next) => {
 
 // route for user-profile after login
 
-router.get('/user-profile',verifyUser,(req,res)=>{
+router.get('/profile',verifyUser,(req,res)=>{
     res.json({status : "Success", name : req.name })
 })
 

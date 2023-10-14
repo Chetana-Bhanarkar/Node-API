@@ -24,8 +24,8 @@ const getEmailService = async(email) => {
     return await user.getEmail(email) ; 
 }
 
-const setPasswordService = async(new_password) => {
-    return await user.setPassword(new_password) ; 
+const setPasswordService = async(new_password,token) => {
+    return await user.setPassword(new_password,token) ; 
 }
 
 const getPasswordService = async(id) => {

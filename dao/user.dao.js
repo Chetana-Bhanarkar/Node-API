@@ -11,6 +11,7 @@ const conn = async(req,res) => {
     })
 }
 
+// Create user table
 
 const createtable = async() => {
     const pool = new Pool(db.config);
@@ -36,7 +37,9 @@ const createtable = async() => {
 
 createtable() ;
 
-//Exist user.
+
+
+//Exist user 
 
 const existsUser = async(email,username) =>{
     const pool = new Pool(db.config);
@@ -49,6 +52,8 @@ const existsUser = async(email,username) =>{
     return isQuery;
 
 }
+
+
 
 // Create an API to register to user table.
 
@@ -68,7 +73,9 @@ const registerUser = async(first_name, last_name, username, password , email, ph
 }
 
 
-// Create an API to get all users from uses table
+
+
+// Create an API to get all users from user table
 
 const getAllUsers = async() => {
     const pool = new Pool(db.config);
@@ -86,6 +93,9 @@ const getAllUsers = async() => {
 
     return result.rows ; 
 }
+
+
+// get user by id
 
 const getUserById = async (id) => {
     const pool = new Pool(db.config);
@@ -118,13 +128,73 @@ const login = async(email,password) => {
 }
 
 
+// get email 
+
+const getEmail = async(email) => {
+    const pool = new Pool(db.config);
+
+    const qr = `SELECT email FROM public.user WHERE email = '${email}' `
+    const result = await pool.query(qr);
+    pool.end();
+    console.log(result.rows);
+    return result.rows;
+
+}
+
+
+
+// set password 
+
+const setPassword = async(new_password) => {
+    const pool = new Pool(db.config);
+
+    const qr = `UPDATE public.user SET password = '${new_password}' `
+    const result = await pool.query(qr);
+    pool.end();
+    console.log(result.rows);
+    return result.rows;
+    
+}
+
+
+// get password 
+
+const getPassword = async(id) => {
+    const pool = new Pool(db.config);
+
+    const qr = `SELECT password FROM public.user WHERE id = '${id}' ` ; 
+    const result = await pool.query(qr);
+    pool.end();
+    console.log(result.rows);
+    return result.rows;
+    
+}
+
+
+// change password
+
+const changePassword = async(new_password,id) => {
+    const pool = new Pool(db.config);
+
+    const qr = `UPDATE public.user SET password = '${new_password}' WHERE id = '${id}' `
+    const result = await pool.query(qr);
+    pool.end();
+    console.log(result.rows);
+    return result.rows;
+    
+}
+
 
 module.exports = {
     registerUser,
     existsUser,
     getAllUsers,
     getUserById,
-    login
+    login,
+    getEmail,
+    setPassword,
+    changePassword,
+    getPassword
 }
 
 

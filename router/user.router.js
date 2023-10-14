@@ -108,7 +108,7 @@ router.post('/login', async (req, res) => {
         const name = dbResponse[0].name;
         const token = jwt.sign({ name }, secretKey, { expiresIn: '1d' })
         res.cookie('token : ', token);
-        res.json({ status: "Success" })
+        res.status(200).json({ status: "Success" })
     } else {
         res.json({ message: "No account !" });
     }

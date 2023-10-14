@@ -12,6 +12,10 @@ const getAllUsersService = async() => {
     return await user.getAllUsers() ; 
 }
 
+const getUserByIdService = async(id) => {
+    return await user.getUserById(id) ; 
+}
+
 const loginService = async(email,password) => {
     return await user.login(email,password) ; 
 }
@@ -21,5 +25,6 @@ module.exports = {
     registerService,
     existsUserService,
     getAllUsersService,
+    getUserByIdService,
     loginService
 }

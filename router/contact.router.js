@@ -4,6 +4,8 @@ const router = express.Router();
 let cont = require('../service/contact.service');
 let users = require('../service/user.service');
 
+
+
 // insert contact api
 
 router.post('/user-details', async (req, res) => {
@@ -32,6 +34,9 @@ router.post('/user-details', async (req, res) => {
 })
 
 
+
+
+
 // contact details with user details API
 
 router.get('/user-details', async (req, res) => {
@@ -50,6 +55,10 @@ router.get('/user-details', async (req, res) => {
         });
     }
 })
+
+
+
+
 
 // user details by user id along with all contacts of that user API 
 

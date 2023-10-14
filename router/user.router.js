@@ -5,8 +5,10 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const secretKey = "extremesecret"
 const cookieParser = require('cookie-parser');
+const randomStr = require('randomstring');
+const sendmail = require('../helpers/sendmail');
 
-router.use(cookieParser()) ; 
+router.use(cookieParser());
 
 
 
@@ -22,17 +24,21 @@ router.post('/register', async (req, res) => {
     let created = req.body.created;
     let updated = req.body.updated;
 
+
+    let pswrd = await bcrypt.hash(password, 10);
+
+
     let dbResponse = await user.existsUserService(email, username);
 
     if (dbResponse) {
         res.status(409).json({
-            status : "Fail" , 
+            status: "Fail",
             message: "This account has already registered"
         })
     } else {
-        let message = await user.registerService(first_name, last_name, username, password, email, phone, created, updated);
+        let message = await user.registerService(first_name, last_name, username, pswrd, email, phone, created, updated);
         res.status(200).json({
-            status : "Success" , 
+            status: "Success",
             message: message
         })
     }
@@ -45,29 +51,29 @@ router.post('/register', async (req, res) => {
 
 //get all users 
 
-router.get('/users', async (req,res) => {
+router.get('/users', async (req, res) => {
     let dbResponse = await user.getAllUsersService();
     console.log(dbResponse);
     res.status(200).json({
-        status:"success" , 
-        message :  dbResponse 
+        status: "success",
+        message: dbResponse
     });
 })
 
 
 
-// Verify user for login 
+// Verify user for login  by token
 
-const verifyUser = (req,res,next) => {
+const verifyUser = (req, res, next) => {
 
-    const token = req.cookies.token ;
-    if(!token){
-        res.json({message : "Please provide token to login !"})
-    }else{
-        jwt.verify(token, secretKey ,(err, decoded)=>{
-            if(err){
-                res.json({Message : "Authentication Error "})
-            }else{
+    const token = req.cookies.token;
+    if (!token) {
+        res.json({ message: "Please provide token to login !" })
+    } else {
+        jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+                res.json({ Message: "Authentication Error " })
+            } else {
                 req.name = decoded.name;
                 next()
             }
@@ -77,10 +83,11 @@ const verifyUser = (req,res,next) => {
 
 
 
+
 // route for user-profile after login
 
-router.get('/profile',verifyUser,(req,res)=>{
-    res.json({status : "Success", name : req.name })
+router.get('/profile', verifyUser, (req, res) => {
+    res.json({ status: "Success", name: req.name })
 })
 
 
@@ -88,22 +95,22 @@ router.get('/profile',verifyUser,(req,res)=>{
 
 // login api 
 
-router.post('/login', async(req,res)=>{
-    let email = req.body.email ; 
-    let password = req.body.password ; 
+router.post('/login', async (req, res) => {
+    let email = req.body.email;
+    let password = req.body.password;
 
-    let dbResponse = await user.loginService(email , password) ; 
+    let dbResponse = await user.loginService(email, password);
 
-    if(!dbResponse){
-        res.status(409).json({message : "Error"})
+    if (!dbResponse) {
+        res.status(409).json({ message: "Error" })
     }
-    if(dbResponse.length > 0){
-        const name = dbResponse[0].name ; 
-        const token = jwt.sign({name} , secretKey , {expiresIn : '1d'})
+    if (dbResponse.length > 0) {
+        const name = dbResponse[0].name;
+        const token = jwt.sign({ name }, secretKey, { expiresIn: '1d' })
         res.cookie('token : ', token);
-        res.json({status : "Success"})
-    }else{
-        res.json({message : "No account !"}) ; 
+        res.json({ status: "Success" })
+    } else {
+        res.json({ message: "No account !" });
     }
 })
 
@@ -111,13 +118,94 @@ router.post('/login', async(req,res)=>{
 
 //logout api
 
-router.post('/logout' , (req,res) => {
+router.post('/logout', (req, res) => {
     res.clearCookie('token');
-    res.json({status : "Success"})
+    res.json({ status: "Success" })
 })
 
 
 
+
+// forget password 
+
+router.post('/forget-password', async (req, res) => {
+    let email = req.body.email;
+    let dbResponse = await user.getEmailService(email);
+
+    if (dbResponse) {
+        let mailSubject = "Forget password";
+        const random = randomStr.generate();
+        let content = '<p> Hii ,' + dbResponse[0].name + '\
+        please <a href="http://localhost:3000/api/v1/user/reset-password?token='+random+'"> Click here </a> to Reset your password </p>';
+
+        sendmail(email, mailSubject, content)
+
+        res.status(200).json({ message: "Mail sent successfully" });
+
+    } else {
+        res.status(401).json({ message: "user not found" });
+    }
+})
+
+
+
+
+// reset password 
+
+router.post('/reset-password', async (req, res) => {
+    const new_password = req.body.new_password;
+
+    const dbResponse = await user.setPasswordService(new_password);
+
+    if (dbResponse) {
+        res.status(200).json({ message: "Password reset successfully" })
+    } else {
+        res.status(500).json({ message: "Internal server error" });
+    }
+})
+
+
+
+// change-password 
+
+
+router.post('/:id/change-password', async (req, res) => {
+    const id = req.params.id;
+    const oldpwd = req.body.oldpassword;
+    const newpwd = req.body.newpassword;
+
+    const pwd = await user.getPasswordService(id);
+
+    if (pwd) {
+        const dbResponse = await user.changePasswordService(id);
+        if (dbResponse) {
+
+            const hashedPassword = dbResponse[0].password;
+
+            bcrypt.compare(oldpwd, hashedPassword, (err, passwordMatch) => {
+                if (err) {
+                    res.status(500).json({ message: 'Error comparing passwords' });
+                } else if (!passwordMatch) {
+                    res.status(401).json({ message: 'Old password is incorrect' });
+                } else {
+                    const salt = bcrypt.genSaltSync(10);
+                    const newHashedPassword = bcrypt.hashSync(newpwd, salt);
+                    const updatePasswordQuery = user.changePasswordService(newHashedPassword, id);
+
+                    if (err) {
+                        res.status(500).json({ status: "fail", message: 'Error updating password' });
+                    } else {
+                        res.status(200).json({ status: "success", message: 'Password updated successfully', data: updatePasswordQuery });
+                    }
+                }
+            });
+        }
+    } else if (pwd.length === 0) {
+        res.status(404).json({ message: 'User not found' });
+    } else {
+        res.status(500).json({ message: 'Error checking the old password' })
+    }
+})
 
 
 

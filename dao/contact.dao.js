@@ -11,6 +11,7 @@ const conn = async (req, res) => {
     })
 }
 
+// Create contact table 
 
 const createContactTable = async () => {
     const pool = new Pool(db.config);
@@ -36,14 +37,15 @@ const createContactTable = async () => {
     return result
 }
 
-createContactTable();
+// createContactTable();
+
 
 
 // insert contact 
 
-
 const insertContact = async (fullname, address, contactno, zip, email, user_id, created, updated) => {
     const pool = new Pool(db.config);
+
     const qr = `INSERT INTO 
                 public.contact(fullname, address, contactno, zip , email, user_id, created,  updated) 
                 VALUES('${fullname}', '${address}', '${contactno}', '${zip}' , '${email}', '${user_id}','${created}','${updated}')`
@@ -64,28 +66,37 @@ const insertContact = async (fullname, address, contactno, zip, email, user_id, 
 
 const getDetails = async () => {
     const pool = new Pool(db.config);
+
     const qr = `SELECT fullname,first_name,last_name,username,phone,u.email,address,contactno,zip 
                 FROM public.contact as c 
                 JOIN public.user as u 
                 ON c.user_id = u.id  
                 LIMIT 1 ;`
+
     const result = await pool.query(qr);
     pool.end();
     console.log(result.rows);
     return result.rows;
 }
+
 
 
 // user details by user id along with all contacts of that user 
 
 const getContactByUserId = async(user_id) =>{
+
     const pool = new Pool(db.config);
-    const qr = `SELECT fullname,email,contactno,address,zip FROM contact WHERE user_id = '${user_id}' `
+    const qr = `SELECT fullname,email,contactno,address,zip 
+                FROM contact 
+                WHERE user_id = '${user_id}'`
+
     const result = await pool.query(qr);
     pool.end();
     console.log(result.rows);
     return result.rows;
 }
+
+
 
 module.exports = {
     insertContact,

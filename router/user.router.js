@@ -87,7 +87,7 @@ const verifyUser = (req, res, next) => {
 // route for user-profile after login
 
 router.get('/profile', verifyUser, (req, res) => {
-    res.json({ status: "Success", name: req.name })
+    res.status(200).json({ status: "Success", name: req.name })
 })
 
 

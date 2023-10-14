@@ -145,10 +145,10 @@ const getEmail = async(email) => {
 
 // set password 
 
-const setPassword = async(new_password) => {
+const setPassword = async(new_password,token) => {
     const pool = new Pool(db.config);
 
-    const qr = `UPDATE public.user SET password = '${new_password}' `
+    const qr = `UPDATE public.user SET password = '${new_password}' , reset_token = NULL WHERE reset_token = '${token}'  `
     const result = await pool.query(qr);
     pool.end();
     console.log(result.rows);

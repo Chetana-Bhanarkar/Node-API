@@ -120,7 +120,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     res.clearCookie('token');
-    res.json({ status: "Success" })
+    res.status(200).json({ status: "Success" })
 })
 
 

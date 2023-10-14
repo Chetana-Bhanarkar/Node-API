@@ -143,7 +143,7 @@ router.post('/forgot-password', async (req, res) => {
         res.status(200).json({ message: "Mail sent successfully" });
 
     } else {
-        res.status(401).json({ message: "user not found" });
+        res.status(404).json({ message: "user not found" });
     }
 })
 

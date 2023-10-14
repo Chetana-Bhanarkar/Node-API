@@ -29,7 +29,6 @@ const createtable = async() => {
     )`;
 
     const result = await pool.query(qr) ; 
-    console.log('table created');
     pool.end() ; 
     return result
 }
@@ -88,6 +87,16 @@ const getAllUsers = async() => {
     return result.rows ; 
 }
 
+const getUserById = async (id) => {
+    const pool = new Pool(db.config);
+
+    const qr = `SELECT first_name,last_name,username,email,phone FROM public.user WHERE id = '${id}' `
+    const result = await pool.query(qr);
+    pool.end();
+    console.log(result.rows);
+    return result.rows;
+
+}
 
 
 // Create login API
@@ -114,6 +123,7 @@ module.exports = {
     registerUser,
     existsUser,
     getAllUsers,
+    getUserById,
     login
 }
 

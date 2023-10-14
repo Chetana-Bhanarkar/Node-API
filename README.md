@@ -22,3 +22,22 @@ Register a new user account.
 ###### Response : 
 ###### `409 Conflict` if the username is already taken.
 ###### `201 Created` if successful.
+
+
+## Get All Users 
+
+##### Endpoint : GET ->  `/users` 
+Get All users from database. 
+
+###### Response : 
+###### `200 Success` if successful.
+
+
+## Login 
+
+##### Endpoint : POST ->  `/login` 
+Log in to an existing user account.
+
+###### Response : 
+###### `409 Conflict` if any credential is invalid.
+###### `200 Created` if successful login.

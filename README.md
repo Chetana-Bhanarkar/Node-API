@@ -11,7 +11,7 @@ This API provides user authentication features, allowing users to register, logi
 ## Authentication 
 Authentication is required for certain endpoints. It's based on JSON Web Tokens (JWT). You can obtain a JWT by logging. Include the token in the `Authorization` header as `Bearer {token}` for authenticated requests.
 
-# User's API 
+# User API's 
 
 ## Registration 
 
@@ -84,7 +84,7 @@ Change the user's password after authentication.
 
 
 
-# Contact's API
+# Contact API's
 
 ## Create an API to Add Contacts
 

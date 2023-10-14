@@ -39,6 +39,8 @@ const createContactTable = async () => {
 createContactTable();
 
 
+// insert contact 
+
 
 const insertContact = async (fullname, address, contactno, zip, email, user_id, created, updated) => {
     const pool = new Pool(db.config);
@@ -56,24 +58,9 @@ const insertContact = async (fullname, address, contactno, zip, email, user_id, 
     return result;
 }
 
-// const getDetailsByid = async (user_id) => {
-//     const pool = new Pool(db.config);
-
-//     const qr = `SELECT user_id,fullname,first_name,last_name,username,phone,u.email,address,contactno,zip
-//                 FROM public.user as u
-//                 LEFT JOIN public.contact as c 
-//                 ON u.id = c.user_id
-//                 WHERE user_id = '${user_id}'
-//                 GROUP BY user_id `
-
-//     const result = await pool.query(qr);
-//     pool.end();
-//     console.log(result.rows);
-//     return result.rows;
-// }
 
 
-
+// contact details API with user details
 
 const getDetails = async () => {
     const pool = new Pool(db.config);
@@ -87,6 +74,9 @@ const getDetails = async () => {
     console.log(result.rows);
     return result.rows;
 }
+
+
+// user details by user id along with all contacts of that user 
 
 const getContactByUserId = async(user_id) =>{
     const pool = new Pool(db.config);

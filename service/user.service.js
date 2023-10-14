@@ -20,11 +20,30 @@ const loginService = async(email,password) => {
     return await user.login(email,password) ; 
 }
 
+const getEmailService = async(email) => {
+    return await user.getEmail(email) ; 
+}
+
+const setPasswordService = async(new_password) => {
+    return await user.setPassword(new_password) ; 
+}
+
+const getPasswordService = async(id) => {
+    return await user.getPassword(id) ; 
+}
+
+const changePasswordService = async(new_password,id) => {
+    return await user.changePassword(new_password,id) ; 
+}
 
 module.exports = {
     registerService,
     existsUserService,
     getAllUsersService,
     getUserByIdService,
-    loginService
+    loginService,
+    getEmailService,
+    setPasswordService,
+    getPasswordService,
+    changePasswordService
 }

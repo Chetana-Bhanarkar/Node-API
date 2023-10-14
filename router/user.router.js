@@ -7,7 +7,7 @@ const secretKey = "extremesecret"
 const cookieParser = require('cookie-parser');
 const randomStr = require('randomstring');
 const sendmail = require('../helpers/sendmail');
-
+const salt = 10 ; 
 router.use(cookieParser());
 
 
@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
     let updated = req.body.updated;
 
 
-    let pswrd = await bcrypt.hash(password, 10);
+    let pswrd = await bcrypt.hash(password, salt);
 
 
     let dbResponse = await user.existsUserService(email, username);
@@ -152,13 +152,20 @@ router.post('/forgot-password', async (req, res) => {
 
 // reset password 
 
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password/:token', async (req, res) => {
     const new_password = req.body.new_password;
+    const token = req.params.token
 
-    const dbResponse = await user.setPasswordService(new_password);
+    const hashedPassword = bcrypt.hashSync(new_password, salt);
+
+    const dbResponse = await user.setPasswordService(hashedPassword,token);
 
     if (dbResponse) {
-        res.status(200).json({ message: "Password reset successfully" })
+        if(token){
+            res.status(200).json({ message: "Password reset successfully" })
+        }else{
+            res.status(400).json({ message: "Bad request" })          
+        }
     } else {
         res.status(500).json({ message: "Internal server error" });
     }

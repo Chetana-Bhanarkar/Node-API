@@ -128,7 +128,7 @@ router.post('/logout', (req, res) => {
 
 // forget password 
 
-router.post('/forget-password', async (req, res) => {
+router.post('/forgot-password', async (req, res) => {
     let email = req.body.email;
     let dbResponse = await user.getEmailService(email);
 

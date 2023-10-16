@@ -114,3 +114,14 @@ This endpoint retrieves user details along with all contacts added by that user 
 ###### Response : 
 ###### `404 Not Found ` if the user and their contacts are found.
 ###### `200 success` if successful .
+
+## User table 
+
+![Screenshot (36)](https://github.com/Chetana-Bhanarkar/Node-API/assets/114468530/2f3a35fc-4d9d-4ed9-93b5-8894e0b585f3)
+
+
+## Contact table
+
+![Screenshot (35)](https://github.com/Chetana-Bhanarkar/Node-API/assets/114468530/c6e26c1c-2ca8-4cf7-b8bf-924070f19af0)
+
+

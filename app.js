@@ -7,7 +7,7 @@ const app = express() ;
 
 app.use(express.json()) ; 
 app.use(express.urlencoded({extended:false}))
-
+    
 app.use('/api/v1/user',user) ; 
 app.use('/api/v1/contact',contact) ; 
 
